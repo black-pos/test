@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>
+        Vue.js sample
+    </title>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.5.17/dist/vue.js"></script>
+    <!-- The core Firebase JS SDK is always required and must be listed first -->
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.7/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.7/firebase-database.js"></script>
+    <!-- TODO: Add SDKs for Firebase products that you want to use
+     https://firebase.google.com/docs/web/setup#available-libraries -->
+
+    <script>
+        // Your web app's Firebase configuration
+        var firebaseConfig = {
+            apiKey: "AIzaSyAZ2-1Lj4I2jx4SrK64pd19Wk2WT82_r34",
+            authDomain: "vuepractice-c0de8.firebaseapp.com",
+            databaseURL: "https://vuepractice-c0de8-default-rtdb.firebaseio.com",
+            projectId: "vuepractice-c0de8",
+            storageBucket: "vuepractice-c0de8.appspot.com",
+            messagingSenderId: "562521296679",
+            appId: "1:562521296679:web:5b0a859da20d99c71aa302"
+        };
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+    </script>
+</head>
+
+<body>
+    <div id="app">
+
+        <h2>じこPｒ</h2>
+        <textarea v-model="myText"></textarea>
+        <br>
+        会員ID:<input type="text" v-model="myText0">
+        <br>
+        name: <input type="text" v-model="myText2">
+        <br>
+        mail:　<input type="text" v-model="myText3">
+        <br>
+        学校名:<input type="text" v-model="myText4">
+        <p>文字数は「{{myText.length}}」</p>
+        <p v-if="myText.length <= 100" v-bind:style="{color: computedColor}">
+            残り文字数「{{100-myText.length}}」
+        </p>
+        <p　id="red" v-else>
+            入力可能文字数を超えています
+        </p>
+        <label><input type="checkbox" v-model="myAgree"></label>利用規約に同意します</label>
+        <button v-on:click="read">読み込み</button>
+        <button v-on:click="write">保存</button>
+        <button v-bind:disabled="myAgree==false" v-on:click="Click">送信</button>
+
+    </div>
+    <script>
+        new Vue({
+            el: "#app",
+            data: {
+                myText: "",
+                myText0: "",
+                myText2: "",
+                myText3: "",
+                myText4: "",
+                isClick: false,
+                isClick2: true,
+                myAgree: false,
+                num: 1,
+                pick: ""
+            },
+            methods: {
+                Click: function () {
+
+                    if (this.myText.length >= 80 && this.myText.length <= 100) {
+                        alert("送信完了");
+                    }
+
+                },
+                write: function () {
+                    if (this.myText0 != "") {
+
+                        if (this.myText != "") {
+
+                            if (this.myText2 != "") {
+
+                                if (this.myText3 != "") {
+
+                                    if (this.myText4 != "") {
+
+                                        firebase.database().ref('13/PR/' + this.myText0).set({//会員番号ごとにわける
+
+                                            string: this.myText,
+                                            string2: this.myText2,
+                                            string3: this.myText3,
+                                            string4: this.myText4,
+                                        })
+                                       
+
+                                    } else {
+                                        alert("学校名未入力");
+                                    }
+                                } else {
+                                    alert("mali未入力");
+                                }
+                            } else {
+                                alert("名前未入力");
+                            }
+                        } else {
+                            alert("自己PR未入力");
+                        }
+                    } else {
+                        alert("会員ID未入力");
+                    }
+
+                }, read: function () {
+                    const dbRef = firebase.database().ref();
+                    dbRef.child("13").child("PR").child(this.myText0).get().then((snapshot) => {
+                        if (snapshot.exists()) {
+                            this.myText = snapshot.val().string;
+                            this.myText2 = snapshot.val().string2;
+                            this.myText3 = snapshot.val().string3;
+                            this.myText4 = snapshot.val().string4;
+                        } else {
+                            alert("データなし");
+                        }
+                    }).catch((error) => {
+                        console.error(error);
+                    });
+                }, che: function () {
+                    if (this.mytext != null) {
+                        if (this.myText2 != null) {
+                            if (this.myText3 != null) {
+                                if (this.mytext4 != null) {
+                                    console.log("保存完了");
+                                } else {
+                                    alert(学校名未入力);
+                                }
+                            } else {
+                                alert(mali未入力);
+                            }
+                        } else {
+                            alert(名前未入力);
+                        }
+                    } else {
+                        alert(自己PR未入力);
+                    }
+                }
+            }, computed: {
+                computedColor: function () {
+                    col = "green";
+                    if (this.myText.length >= 80) {
+                        col = "orange"
+                    }
+                    if (this.myText.length >= 99) {
+                        col = "red"
+                    }
+                    return col;
+                }
+            }
+
+
+
+
+
+        })
+
+    </script>
+    <style>
+        textarea {
+            margin-left: auto;
+            margin-right: auto;
+            width: 580px;
+            height: 360px;
+        }
+
+        #red {
+            color: red;
+        }
+    </style>
+</body>
+
+</html>
